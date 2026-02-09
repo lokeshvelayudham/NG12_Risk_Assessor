@@ -24,13 +24,13 @@ interface Message {
   citations?: any[]
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
 export function ChatInterface() {
   const searchParams = useSearchParams()
   const router = useRouter()
   
-  // Get session from URL or default. 
   const sessionId = searchParams.get("session_id") || "default-session-1"
-  
   const [messages, setMessages] = React.useState<Message[]>([])
   const [input, setInput] = React.useState("")
   const [isLoading, setIsLoading] = React.useState(false)
@@ -38,9 +38,10 @@ export function ChatInterface() {
   // Load history on mount or session change
   React.useEffect(() => {
     const fetchHistory = async () => {
-      setMessages([]) // Clear previous messages while loading
+      setMessages([])
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/chat/${sessionId}/history`)
+        const res = await fetch(`${API_URL}/api/chat/${sessionId}/history`)
+        // ...
         if (res.ok) {
           const data = await res.json()
           const parsedMessages: Message[] = data.history.map((line: string) => {
@@ -63,7 +64,7 @@ export function ChatInterface() {
 
   const handleClear = async () => {
     try {
-        await fetch(`http://127.0.0.1:8000/api/chat/${sessionId}`, { method: "DELETE" })
+        await fetch(`${API_URL}/api/chat/${sessionId}`, { method: "DELETE" })
         setMessages([{ role: "agent", content: "Chat history cleared. How can I help?" }])
     } catch (e) {
         console.error("Failed to clear history", e)
@@ -80,7 +81,7 @@ export function ChatInterface() {
     setIsLoading(true)
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/chat", {
+      const response = await fetch(`${API_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

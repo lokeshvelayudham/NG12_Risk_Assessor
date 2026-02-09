@@ -18,10 +18,12 @@ export function Sidebar({ className }: SidebarProps) {
   
   const [sessions, setSessions] = useState<any[]>([])
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
   useEffect(() => {
     const fetchSessions = async () => {
         try {
-            const res = await fetch("http://127.0.0.1:8000/api/sessions")
+            const res = await fetch(`${API_URL}/api/sessions`)
             if (res.ok) {
                 const data = await res.json()
                 setSessions(data.sessions)
