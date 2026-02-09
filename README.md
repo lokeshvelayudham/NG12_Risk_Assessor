@@ -55,17 +55,44 @@ npm run dev
 ```
 *Frontend runs on `http://localhost:3000`*
 
-### 3. Docker (Recommended for Deployment)
-
-Build and run the entire stack with a single command:
+### 3. Docker (Local)
 
 ```bash
-# Build and start services
 docker-compose up --build
-
-# Run in background
-docker-compose up -d
 ```
+*Frontend: `http://localhost:3000` | Backend: `http://localhost:8000`*
+
+## Deployment (Hybrid Strategy)
+
+
+### Part A: Backend (Render)
+1.  **Create Service**: New "Web Service" on [Render](https://render.com).
+2.  **Repo**: Connect this repository.
+3.  **Settings**:
+    *   **Runtime**: Docker
+    *   **Root Directory**: `.` (Leave blank)
+    *   **Region**: Oregon (US West)
+    *   **Instance Type**: Free or Starter.
+4.  **Environment Variables**:
+    *   `GOOGLE_PROJECT_ID`: Your Project ID.
+    *   `GOOGLE_LOCATION`: `us-central1`.
+    *   `GOOGLE_APPLICATION_CREDENTIALS`: `/etc/secrets/google-credentials.json`
+5.  **Secret Files** (Critical for Authentication):
+    *   Filename: `google-credentials.json`
+    *   Content: Paste your local `credentials.json` content.
+    *   *Note: This file is mounted at `/etc/secrets/google-credentials.json` automatically.*
+
+### Part B: Frontend (Vercel)
+1.  **Create Project**: New Project on [Vercel](https://vercel.com).
+2.  **Repo**: Connect this repository.
+3.  **Settings**:
+    *   **Root Directory**: `frontend` (Important!)
+    *   **Framework**: Next.js (Auto-detected).
+4.  **Environment Variables**:
+    *   `NEXT_PUBLIC_API_URL`: Your Render Backend URL (e.g., `https://ng12-backend.onrender.com`).
+    *   *Do not add a trailing slash.*
+
+## Usage
 
 *   **Frontend**: `http://localhost:3000`
 *   **Backend**: `http://localhost:8000`

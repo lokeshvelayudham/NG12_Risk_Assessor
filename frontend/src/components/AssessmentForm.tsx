@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
 export function AssessmentForm() {
     const [patientId, setPatientId] = React.useState("")
     const [result, setResult] = React.useState<any>(null)
@@ -26,7 +28,7 @@ export function AssessmentForm() {
         setResult(null)
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/assess", {
+            const response = await fetch(`${API_URL}/api/assess`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ patient_id: patientId }),
